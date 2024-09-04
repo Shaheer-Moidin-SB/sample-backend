@@ -37,10 +37,9 @@ export class AppService {
 
   async createOrder({ userId, price }: CreateOrderRequest) {
     try {
-      return this.billingClient.emit(
-        'order_created',
-        new OrderCreatedEvent('123', userId, price),
-      );
+      return await this.billingClient
+        .send('order_created', new OrderCreatedEvent('123', userId, price))
+        .toPromise();
     } catch (oError) {
       throw new RpcException('Error while creating order ' + oError);
     }
