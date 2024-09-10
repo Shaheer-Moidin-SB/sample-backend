@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Inject,
   OnModuleInit,
   Post,
@@ -10,7 +12,7 @@ import {
 import { AppService } from './app.service';
 import { CreateUserRequest } from './create-user-request.dto';
 import { CreateOrderRequest } from './create-order-request.dto';
-import { ClientKafka, RpcException } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthFlag } from './decorators/auth-flag.decorator';
 // import { CurrentUser } from './decorators/current-user.decorator';
@@ -34,7 +36,7 @@ export class AppController implements OnModuleInit {
     try {
       return await this.appService.createUser(createUserRequest);
     } catch (oError) {
-      throw new RpcException('Error while creating order ' + oError);
+      throw new HttpException(oError, HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -45,7 +47,7 @@ export class AppController implements OnModuleInit {
     try {
       return this.appService.getAnalytics();
     } catch (oError) {
-      throw new RpcException('Error while creating order ' + oError);
+      throw new HttpException(oError, HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -60,7 +62,7 @@ export class AppController implements OnModuleInit {
       const orderData = await this.appService.createOrder(createOrderRequest);
       return orderData;
     } catch (oError) {
-      throw new RpcException('Error while creating order ' + oError);
+      throw new HttpException(oError, HttpStatus.UNAUTHORIZED);
     }
   }
 

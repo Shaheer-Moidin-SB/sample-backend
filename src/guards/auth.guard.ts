@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       const flag = this.reflector.get<string>('authFlag', handler);
 
       if (!userId) {
-        throw new UnauthorizedException('Authentication Failed'); // No userId means unauthorized
+        throw new UnauthorizedException('User Authentication Failed'); // No userId means unauthorized
       }
 
       if (flag && flag === 'privateRoute') {
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }
     } catch (oError) {
-      throw new UnauthorizedException('Authentication Failed');
+      throw new UnauthorizedException(oError);
     }
   }
 }
