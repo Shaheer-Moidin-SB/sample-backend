@@ -12,6 +12,7 @@ import { CreateUserRequest } from './create-user-request.dto';
 import { CreateOrderRequest } from './create-order-request.dto';
 import { ClientKafka, RpcException } from '@nestjs/microservices';
 import { AuthGuard } from './guards/auth.guard';
+import { AuthFlag } from './decorators/auth-flag.decorator';
 // import { CurrentUser } from './decorators/current-user.decorator';
 @Controller()
 export class AppController implements OnModuleInit {
@@ -27,6 +28,8 @@ export class AppController implements OnModuleInit {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
+  @AuthFlag('privateRoute')
   async createUser(@Body() createUserRequest: CreateUserRequest) {
     try {
       return await this.appService.createUser(createUserRequest);
@@ -36,6 +39,8 @@ export class AppController implements OnModuleInit {
   }
 
   @Get('analytics')
+  @UseGuards(AuthGuard)
+  @AuthFlag('privateRoute')
   async getAnalytics() {
     try {
       return this.appService.getAnalytics();
@@ -46,6 +51,7 @@ export class AppController implements OnModuleInit {
 
   @Post('create-order')
   @UseGuards(AuthGuard)
+  @AuthFlag('privateRoute')
   async createOrder(
     @Body() createOrderRequest: CreateOrderRequest,
     // @CurrentUser() userId: string,
